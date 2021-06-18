@@ -14,11 +14,24 @@ class GamesController{
 
         let { name,image,stockTotal,categoryId,pricePerDay } = req.body;
 
-        if(await Categories.exists(categoryId,`id`)){
-            await Games.insert({name,image,stockTotal,categoryId,pricePerDay})
-            res.send(200)
+        if(await Games.exists('name',name)){
+            return res.send(409)
 
         }
+
+        try{
+            if(await Categories.exists(categoryId,'id')){
+                await Games.insert({name,image,stockTotal,categoryId,pricePerDay})
+                res.send(200)
+            }
+            else {
+                res.send(400)
+            }
+        }
+        catch(e){
+            console.log(e)
+        }
+
  
     }
 
